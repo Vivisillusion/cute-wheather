@@ -648,4 +648,24 @@ footer {
   box-shadow: 0 6px 14px rgba(183, 148, 244, 0.6);
   transform: translateY(-2px);
 }
+.install-fixed {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  background-color: #b8a4d4;
+  color: white;
+  border: none;
+  border-radius: 30px;
+  padding: 10px 20px;
+  font-size: 1rem;
+  font-weight: bold;
+  cursor: pointer;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+  z-index: 9999;
+  display: block;
+}
+
+.install-fixed:hover {
+  background-color: #9c8ec3;
+}
 
