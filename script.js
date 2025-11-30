@@ -351,3 +351,35 @@ window.addEventListener('beforeinstallprompt', (e) => {
     });
   });
 });
+let deferredPrompt = null;
+const installBtn = document.getElementById('install-btn');
+
+window.addEventListener('beforeinstallprompt', (e) => {
+  console.log("🔥 beforeinstallprompt disparado");
+  e.preventDefault();
+  deferredPrompt = e;
+});
+
+installBtn.addEventListener('click', async () => {
+  try {
+    if (deferredPrompt) {
+      deferredPrompt.prompt();
+      const choiceResult = await deferredPrompt.userChoice;
+
+      if (choiceResult.outcome === 'accepted') {
+        console.log("✅ App instalado com sucesso.");
+      } else {
+        console.warn("❌ Usuário recusou a instalação.");
+        alert("Instalação recusada... mas tudo bem, eu continuo aqui. Esperando.");
+      }
+
+      deferredPrompt = null;
+    } else {
+      console.error("🚫 Não é possível instalar: 'beforeinstallprompt' não foi disparado ainda.");
+      alert("🚫 Não dá pra instalar agora.\n\nMotivo: o navegador ainda não permitiu. Verifique se:\n• Está em HTTPS\n• Tem um Service Worker funcionando\n• Visitou o site mais de uma vez\n\nRelaxa. O caos é paciente.");
+    }
+  } catch (err) {
+    console.error("💥 Erro durante a tentativa de instalação:", err);
+    alert("💥 Algo deu MUITO errado ao tentar instalar o app:\n" + err.message);
+  }
+});
