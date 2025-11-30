@@ -307,3 +307,24 @@ window.addEventListener('load', () => {
   });
 });
 
+let deferredPrompt;
+const installBtn = document.getElementById('install-btn');
+
+window.addEventListener('beforeinstallprompt', (e) => {
+  e.preventDefault();
+  deferredPrompt = e;
+  installBtn.style.display = 'block';
+
+  installBtn.addEventListener('click', () => {
+    installBtn.style.display = 'none';
+    deferredPrompt.prompt();
+    deferredPrompt.userChoice.then((choiceResult) => {
+      if (choiceResult.outcome === 'accepted') {
+        console.log('Usuário aceitou instalar o app');
+      } else {
+        console.log('Usuário recusou instalar o app');
+      }
+      deferredPrompt = null;
+    });
+  });
+});
