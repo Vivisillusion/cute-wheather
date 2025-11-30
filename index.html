@@ -155,6 +155,32 @@
   <footer>
     <p>Made with 💜 and lots of sparkles ✨</p>
   </footer>
+  let deferredPrompt;
+const installBtn = document.getElementById('install-btn');
+
+// Ouve o evento que o navegador dispara quando detecta um PWA instalável
+window.addEventListener('beforeinstallprompt', (e) => {
+  e.preventDefault(); // Evita o prompt automático
+  deferredPrompt = e;
+  installBtn.style.display = 'block'; // Mostra o botão
+  
+  installBtn.addEventListener('click', () => {
+    installBtn.style.display = 'none';
+    deferredPrompt.prompt(); // Exibe o prompt
+
+    deferredPrompt.userChoice.then((choiceResult) => {
+      if (choiceResult.outcome === 'accepted') {
+        console.log('Usuário aceitou instalar o app');
+      } else {
+        console.log('Usuário recusou a instalação');
+      }
+      deferredPrompt = null;
+    });
+  });
+});
+<!-- Botão para instalar o app -->
+<button id="install-btn" class="btn-install" style="display:none;">✨ Instalar App ✨</button>
+
 
   <script src="script.js"></script>
   
