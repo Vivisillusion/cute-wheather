@@ -2,7 +2,7 @@
   "name": "Cute Weather",
   "short_name": "Cute Weather",
   "description": "Your magical weather companion! Check weather forecasts with cute animations.",
-  "start_url": "/cute-weather/",
+  "start_url": "/cute-wheather/",
   "display": "standalone",
   "background_color": "#f5f3f0",
   "theme_color": "#b8a4d4",
