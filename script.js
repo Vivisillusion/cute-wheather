@@ -1,6 +1,6 @@
 // CUTE WEATHER APP - JAVASCRIPT
 // API Configuration
-const API_KEY = 'YOUR_API_KEY_HERE'; // You'll need to get this from OpenWeatherMap
+const API_KEY = '7fa58de710f0a10cc4662052b5389365'; // You'll need to get this from OpenWeatherMap//done
 const API_BASE_URL = 'https://api.openweathermap.org/data/2.5';
 
 // DOM Elements
