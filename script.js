@@ -383,3 +383,34 @@ installBtn.addEventListener('click', async () => {
     alert("💥 Algo deu MUITO errado ao tentar instalar o app:\n" + err.message);
   }
 });
+let deferredPrompt;
+
+window.addEventListener('beforeinstallprompt', (e) => {
+  e.preventDefault();
+  deferredPrompt = e;
+
+  const installBtn = document.getElementById('install-btn');
+  installBtn.style.display = 'block';
+
+  installBtn.addEventListener('click', async () => {
+    try {
+      installBtn.disabled = true;
+      await deferredPrompt.prompt();
+
+      const { outcome } = await deferredPrompt.userChoice;
+      console.log(`User response to the install prompt: ${outcome}`);
+      deferredPrompt = null;
+
+      if (outcome === 'accepted') {
+        alert('Aplicativo instalado com sucesso!');
+      } else {
+        alert('Instalação cancelada.');
+      }
+    } catch (error) {
+      console.error('Erro ao tentar instalar:', error);
+      alert('Erro ao instalar o aplicativo: ' + error.message);
+    } finally {
+      installBtn.disabled = false;
+    }
+  });
+});
