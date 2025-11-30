@@ -266,66 +266,102 @@ function shakeInput() {
   }, 500);
 }
 
-// PWA INSTALLATION - CÓDIGO LIMPO E ÚNICO
-let deferredPrompt;
+// ========================================
+// PWA INSTALLATION - BOTÃO FIXO COM DEBUG
+// ========================================
+
+let deferredPrompt = null;
 const installBtn = document.getElementById('install-btn');
 
-// Esconde o botão inicialmente
-if (installBtn) {
-  installBtn.style.display = 'none';
-}
-
+// Captura o evento de instalação
 window.addEventListener('beforeinstallprompt', (e) => {
-  console.log('✨ PWA pode ser instalado!');
+  console.log('✅ beforeinstallprompt disparado - PWA pode ser instalado!');
   e.preventDefault();
   deferredPrompt = e;
   
-  // Mostra o botão de instalar
+  // Muda o texto do botão quando estiver pronto
   if (installBtn) {
-    installBtn.style.display = 'block';
+    installBtn.textContent = '✨ Instalar App (PRONTO) ✨';
+    installBtn.style.backgroundColor = '#51cf66'; // Verde quando pronto
   }
 });
 
-// Click no botão de instalar
+// Click no botão SEMPRE VISÍVEL
 if (installBtn) {
   installBtn.addEventListener('click', async () => {
+    console.log('🔘 Botão de instalar clicado');
+    
+    // Verifica se o prompt está disponível
     if (!deferredPrompt) {
-      console.log('❌ PWA não está pronto para instalação ainda');
-      alert('O app ainda não pode ser instalado. Tente:\n• Recarregar a página\n• Visitar o site algumas vezes\n• Verificar se está em HTTPS');
+      const errorMsg = `❌ O PWA não pode ser instalado agora.
+
+Possíveis motivos:
+• O site não está em HTTPS
+• Falta o Service Worker registrado
+• Falta o manifest.json válido
+• Você já instalou o app
+• O navegador ainda não liberou (precisa visitar mais vezes)
+
+Detalhes técnicos:
+• Service Worker: ${navigator.serviceWorker ? 'Suportado' : 'NÃO suportado'}
+• HTTPS: ${window.location.protocol === 'https:' ? 'Sim' : 'NÃO'}
+• Navegador: ${navigator.userAgent}`;
+      
+      alert(errorMsg);
+      console.error(errorMsg);
       return;
     }
     
     try {
-      // Mostra o prompt de instalação
+      console.log('📲 Mostrando prompt de instalação...');
+      
+      // Mostra o prompt
       await deferredPrompt.prompt();
       
       // Espera a escolha do usuário
       const { outcome } = await deferredPrompt.userChoice;
       
-      console.log(`Resultado da instalação: ${outcome}`);
+      console.log(`Resultado: ${outcome}`);
       
       if (outcome === 'accepted') {
-        console.log('✅ App instalado com sucesso!');
+        alert('✅ App instalado com sucesso! Olha na tela inicial do seu celular 💜');
+        console.log('✅ Usuário aceitou instalar');
       } else {
-        console.log('❌ Usuário recusou a instalação');
+        alert('😢 Você recusou a instalação. Mas tudo bem, o botão continua aqui!');
+        console.log('❌ Usuário recusou instalar');
       }
       
       // Reseta o prompt
       deferredPrompt = null;
-      installBtn.style.display = 'none';
+      
+      if (installBtn) {
+        installBtn.textContent = '✨ Instalar App ✨';
+        installBtn.style.backgroundColor = '#b8a4d4';
+      }
       
     } catch (error) {
-      console.error('Erro ao instalar:', error);
-      alert('Erro ao instalar o app: ' + error.message);
+      const errorMsg = `💥 Erro ao tentar instalar: ${error.message}`;
+      alert(errorMsg);
+      console.error('Erro completo:', error);
     }
   });
 }
 
-// Detecta quando o app já foi instalado
+// Detecta quando o app foi instalado
 window.addEventListener('appinstalled', () => {
-  console.log('✅ PWA foi instalado com sucesso!');
+  console.log('🎉 PWA foi instalado com sucesso!');
+  alert('🎉 App instalado! Você pode acessá-lo pela tela inicial agora!');
   deferredPrompt = null;
+  
   if (installBtn) {
-    installBtn.style.display = 'none';
+    installBtn.textContent = '✅ App Instalado!';
+    installBtn.style.backgroundColor = '#51cf66';
+    installBtn.disabled = true;
   }
 });
+
+// Log inicial de debug
+console.log('🔍 Debug PWA:');
+console.log('- Service Worker suportado:', 'serviceWorker' in navigator);
+console.log('- HTTPS:', window.location.protocol === 'https:');
+console.log('- Standalone mode:', window.matchMedia('(display-mode: standalone)').matches);
