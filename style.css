@@ -1,5 +1,5 @@
 /* ===================================
-   CUTE WEATHER APP STYLES
+   CUTE WEATHER APP STYLES - LIMPO
    =================================== */
 
 @import url('https://fonts.googleapis.com/css2?family=Quicksand:wght@400;600;700&display=swap');
@@ -345,7 +345,6 @@ header h1 {
   justify-content: center;
 }
 
-/* Sunny Animation */
 .sunny-animated .sun {
   animation: rotate 20s linear infinite;
 }
@@ -359,7 +358,6 @@ header h1 {
   }
 }
 
-/* Cloudy Animation */
 .cloudy-animated .cloud {
   animation: float-cloud 3s ease-in-out infinite;
 }
@@ -373,7 +371,6 @@ header h1 {
   }
 }
 
-/* Rainy Animation */
 .rainy-animated {
   position: relative;
 }
@@ -384,17 +381,17 @@ header h1 {
   animation: rain-fall 1s linear infinite;
 }
 
-.rainy-animated .rain-drop:nth-child(1) {
+.rainy-animated .rain-drop:nth-child(2) {
   left: 30%;
   animation-delay: 0s;
 }
 
-.rainy-animated .rain-drop:nth-child(2) {
+.rainy-animated .rain-drop:nth-child(3) {
   left: 50%;
   animation-delay: 0.3s;
 }
 
-.rainy-animated .rain-drop:nth-child(3) {
+.rainy-animated .rain-drop:nth-child(4) {
   left: 70%;
   animation-delay: 0.6s;
 }
@@ -410,7 +407,6 @@ header h1 {
   }
 }
 
-/* Partly Cloudy Animation */
 .partly-cloudy-animated .sun {
   animation: peek 4s ease-in-out infinite;
 }
@@ -559,6 +555,40 @@ footer {
   font-size: 0.95rem;
 }
 
+/* Install Button - FIXO NO CANTO */
+.install-fixed {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  background-color: var(--primary-purple);
+  color: white;
+  border: none;
+  border-radius: 30px;
+  padding: 12px 24px;
+  font-family: 'Quicksand', sans-serif;
+  font-size: 1rem;
+  font-weight: 700;
+  cursor: pointer;
+  box-shadow: 0 4px 12px rgba(184, 164, 212, 0.4);
+  z-index: 9999;
+  transition: all 0.3s ease;
+}
+
+.install-fixed:hover {
+  background-color: #a590c4;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(184, 164, 212, 0.6);
+}
+
+.install-fixed:active {
+  transform: translateY(0);
+}
+
+.install-fixed:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
 /* Utility Classes */
 .hidden {
   display: none !important;
@@ -606,6 +636,13 @@ footer {
   .forecast-grid {
     grid-template-columns: 1fr;
   }
+  
+  .install-fixed {
+    bottom: 10px;
+    right: 10px;
+    padding: 10px 16px;
+    font-size: 0.9rem;
+  }
 }
 
 @media (max-width: 480px) {
@@ -626,59 +663,4 @@ footer {
   .temp-unit {
     font-size: 2rem;
   }
-}
-.btn-install {
-  display: block;
-  margin: 2rem auto;
-  padding: 0.8rem 1.6rem;
-  font-family: 'Quicksand', sans-serif;
-  font-size: 1rem;
-  font-weight: 600;
-  color: #fff;
-  background: linear-gradient(145deg, #c4b5fd, #a78bfa);
-  border: none;
-  border-radius: 2rem;
-  box-shadow: 0 4px 10px rgba(183, 148, 244, 0.4);
-  cursor: pointer;
-  transition: all 0.3s ease;
-}
-
-.btn-install:hover {
-  background: linear-gradient(145deg, #a78bfa, #c4b5fd);
-  box-shadow: 0 6px 14px rgba(183, 148, 244, 0.6);
-  transform: translateY(-2px);
-}
-.install-fixed {
-  position: fixed;
-  bottom: 20px;
-  right: 20px;
-  background-color: #b8a4d4;
-  color: white;
-  border: none;
-  border-radius: 30px;
-  padding: 10px 20px;
-  font-size: 1rem;
-  font-weight: bold;
-  cursor: pointer;
-  box-shadow: 0 4px 8px rgba(0,0,0,0.2);
-  z-index: 9999;
-  display: block;
-}
-
-.install-fixed:hover {
-  background-color: #9c8ec3;
-}
-
-.install-fixed {
-  position: fixed;
-  bottom: 20px;
-  right: 20px;
-  background-color: #b8a4d4;
-  color: white;
-  border: none;
-  border-radius: 20px;
-  padding: 10px 20px;
-  font-size: 16px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  z-index: 1000;
 }
