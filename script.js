@@ -1,29 +1,6 @@
-let deferredPrompt;
-
-window.addEventListener('beforeinstallprompt', (e) => {
-  e.preventDefault();
-  deferredPrompt = e;
-
-  const installBtn = document.getElementById('install-btn');
-  installBtn.style.display = 'block';
-
-  installBtn.addEventListener('click', () => {
-    installBtn.style.display = 'none';
-    deferredPrompt.prompt();
-    deferredPrompt.userChoice.then((choiceResult) => {
-      if (choiceResult.outcome === 'accepted') {
-        console.log('User accepted the install prompt');
-      } else {
-        console.log('User dismissed the install prompt');
-      }
-      deferredPrompt = null;
-    });
-  });
-});
-
 // CUTE WEATHER APP - JAVASCRIPT
 // API Configuration
-const API_KEY = '7fa58de710f0a10cc4662052b5389365'; // You'll need to get this from OpenWeatherMap//done
+const API_KEY = '7fa58de710f0a10cc4662052b5389365';
 const API_BASE_URL = 'https://api.openweathermap.org/data/2.5';
 
 // DOM Elements
@@ -71,7 +48,6 @@ async function getWeatherByCity(city) {
   showLoading();
   
   try {
-    // Get current weather
     const currentResponse = await fetch(
       `${API_BASE_URL}/weather?q=${city}&units=metric&appid=${API_KEY}`
     );
@@ -82,7 +58,6 @@ async function getWeatherByCity(city) {
     
     const currentData = await currentResponse.json();
     
-    // Get 5-day forecast
     const forecastResponse = await fetch(
       `${API_BASE_URL}/forecast?q=${city}&units=metric&appid=${API_KEY}`
     );
@@ -109,14 +84,12 @@ function getLocationWeather() {
       const { latitude, longitude } = position.coords;
       
       try {
-        // Get current weather
         const currentResponse = await fetch(
           `${API_BASE_URL}/weather?lat=${latitude}&lon=${longitude}&units=metric&appid=${API_KEY}`
         );
         
         const currentData = await currentResponse.json();
         
-        // Get 5-day forecast
         const forecastResponse = await fetch(
           `${API_BASE_URL}/forecast?lat=${latitude}&lon=${longitude}&units=metric&appid=${API_KEY}`
         );
@@ -136,16 +109,13 @@ function getLocationWeather() {
 
 // Display Weather Data
 function displayWeather(current, forecast) {
-  // Hide all states
   welcomeState.classList.add('hidden');
   loadingState.classList.add('hidden');
   errorState.classList.add('hidden');
   
-  // Show weather sections
   currentWeather.classList.remove('hidden');
   forecastSection.classList.remove('hidden');
   
-  // Update current weather
   cityName.textContent = `${current.name}, ${current.sys.country}`;
   dateTime.textContent = formatDate(new Date());
   temperature.textContent = Math.round(current.main.temp);
@@ -155,10 +125,7 @@ function displayWeather(current, forecast) {
   wind.textContent = `${Math.round(current.wind.speed * 3.6)} km/h`;
   clouds.textContent = `${current.clouds.all}%`;
   
-  // Update animated weather icon
   updateWeatherIcon(current.weather[0].main, weatherIconAnimated);
-  
-  // Update 5-day forecast
   displayForecast(forecast);
 }
 
@@ -241,7 +208,6 @@ function getWeatherIcon(weatherMain) {
 
 // Display 5-Day Forecast
 function displayForecast(forecastData) {
-  // Get one forecast per day (at noon)
   const dailyForecasts = forecastData.list.filter(item => 
     item.dt_txt.includes('12:00:00')
   ).slice(0, 5);
@@ -300,117 +266,66 @@ function shakeInput() {
   }, 500);
 }
 
-// Initialize with Diadema weather on load (optional)
-// Uncomment the line below if you want to load Diadema weather by default
-// window.addEventListener('load', () => getWeatherByCity('Diadema, BR'));
-
-// PWA Installation Logic
-window.addEventListener('load', () => {
-  let deferredPrompt;
-  const installBtn = document.getElementById('install-btn');
-
-  window.addEventListener('beforeinstallprompt', (e) => {
-    e.preventDefault();
-    deferredPrompt = e;
-    installBtn.style.display = 'block';
-
-    installBtn.addEventListener('click', () => {
-      installBtn.style.display = 'none';
-      deferredPrompt.prompt();
-
-      deferredPrompt.userChoice.then((choiceResult) => {
-        if (choiceResult.outcome === 'accepted') {
-          console.log('Usuário aceitou instalar o app');
-        } else {
-          console.log('Usuário recusou a instalação');
-        }
-        deferredPrompt = null;
-      });
-    });
-  });
-});
-
+// PWA INSTALLATION - CÓDIGO LIMPO E ÚNICO
 let deferredPrompt;
 const installBtn = document.getElementById('install-btn');
 
-window.addEventListener('beforeinstallprompt', (e) => {
-  e.preventDefault();
-  deferredPrompt = e;
-  installBtn.style.display = 'block';
-
-  installBtn.addEventListener('click', () => {
-    installBtn.style.display = 'none';
-    deferredPrompt.prompt();
-    deferredPrompt.userChoice.then((choiceResult) => {
-      if (choiceResult.outcome === 'accepted') {
-        console.log('Usuário aceitou instalar o app');
-      } else {
-        console.log('Usuário recusou instalar o app');
-      }
-      deferredPrompt = null;
-    });
-  });
-});
-let deferredPrompt = null;
-const installBtn = document.getElementById('install-btn');
+// Esconde o botão inicialmente
+if (installBtn) {
+  installBtn.style.display = 'none';
+}
 
 window.addEventListener('beforeinstallprompt', (e) => {
-  console.log("🔥 beforeinstallprompt disparado");
+  console.log('✨ PWA pode ser instalado!');
   e.preventDefault();
   deferredPrompt = e;
-});
-
-installBtn.addEventListener('click', async () => {
-  try {
-    if (deferredPrompt) {
-      deferredPrompt.prompt();
-      const choiceResult = await deferredPrompt.userChoice;
-
-      if (choiceResult.outcome === 'accepted') {
-        console.log("✅ App instalado com sucesso.");
-      } else {
-        console.warn("❌ Usuário recusou a instalação.");
-        alert("Instalação recusada... mas tudo bem, eu continuo aqui. Esperando.");
-      }
-
-      deferredPrompt = null;
-    } else {
-      console.error("🚫 Não é possível instalar: 'beforeinstallprompt' não foi disparado ainda.");
-      alert("🚫 Não dá pra instalar agora.\n\nMotivo: o navegador ainda não permitiu. Verifique se:\n• Está em HTTPS\n• Tem um Service Worker funcionando\n• Visitou o site mais de uma vez\n\nRelaxa. O caos é paciente.");
-    }
-  } catch (err) {
-    console.error("💥 Erro durante a tentativa de instalação:", err);
-    alert("💥 Algo deu MUITO errado ao tentar instalar o app:\n" + err.message);
+  
+  // Mostra o botão de instalar
+  if (installBtn) {
+    installBtn.style.display = 'block';
   }
 });
-let deferredPrompt;
 
-window.addEventListener('beforeinstallprompt', (e) => {
-  e.preventDefault();
-  deferredPrompt = e;
-
-  const installBtn = document.getElementById('install-btn');
-  installBtn.style.display = 'block';
-
+// Click no botão de instalar
+if (installBtn) {
   installBtn.addEventListener('click', async () => {
+    if (!deferredPrompt) {
+      console.log('❌ PWA não está pronto para instalação ainda');
+      alert('O app ainda não pode ser instalado. Tente:\n• Recarregar a página\n• Visitar o site algumas vezes\n• Verificar se está em HTTPS');
+      return;
+    }
+    
     try {
-      installBtn.disabled = true;
+      // Mostra o prompt de instalação
       await deferredPrompt.prompt();
-
+      
+      // Espera a escolha do usuário
       const { outcome } = await deferredPrompt.userChoice;
-      console.log(`User response to the install prompt: ${outcome}`);
-      deferredPrompt = null;
-
+      
+      console.log(`Resultado da instalação: ${outcome}`);
+      
       if (outcome === 'accepted') {
-        alert('Aplicativo instalado com sucesso!');
+        console.log('✅ App instalado com sucesso!');
       } else {
-        alert('Instalação cancelada.');
+        console.log('❌ Usuário recusou a instalação');
       }
+      
+      // Reseta o prompt
+      deferredPrompt = null;
+      installBtn.style.display = 'none';
+      
     } catch (error) {
-      console.error('Erro ao tentar instalar:', error);
-      alert('Erro ao instalar o aplicativo: ' + error.message);
-    } finally {
-      installBtn.disabled = false;
+      console.error('Erro ao instalar:', error);
+      alert('Erro ao instalar o app: ' + error.message);
     }
   });
+}
+
+// Detecta quando o app já foi instalado
+window.addEventListener('appinstalled', () => {
+  console.log('✅ PWA foi instalado com sucesso!');
+  deferredPrompt = null;
+  if (installBtn) {
+    installBtn.style.display = 'none';
+  }
 });
