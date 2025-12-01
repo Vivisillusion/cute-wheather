@@ -5,19 +5,308 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Cute Weather ✨</title>
   
+  <!-- ÍCONE DO SITE -->
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' fill='%23b8a4d4' rx='20'/><text x='50' y='70' font-size='60' text-anchor='middle' fill='white'>🌤️</text></svg>">
+  
   <!-- PWA Configuration -->
   <link rel="manifest" href="manifest.json">
   <meta name="theme-color" content="#b8a4d4">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="Cute Weather">
-  <link rel="apple-touch-icon" href="icons/icon-192x192.png">
+  <link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' fill='%23b8a4d4' rx='20'/><text x='50' y='70' font-size='60' text-anchor='middle' fill='white'>🌤️</text></svg>">
   
   <!-- Stylesheets -->
-  <link rel="stylesheet" href="style.css">
   <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;600;700&display=swap" rel="stylesheet">
+  
+  <style>
+    /* VARIÁVEIS DE CORES */
+    :root {
+      /* TEMA CLARO (default) */
+      --bg-color: #f5f3f0;
+      --text-color: #2d2838;
+      --card-bg: #ffffff;
+      --purple: #b8a4d4;
+      --dark-purple: #3d2e52;
+      --accent-yellow: #ffc97d;
+      --input-bg: #ffffff;
+      --input-border: #f0edf5;
+    }
+
+    [data-theme="dark"] {
+      /* TEMA ESCURO */
+      --bg-color: #2a1b3d;
+      --text-color: #f5f3f0;
+      --card-bg: #3d2e52;
+      --purple: #b8a4d4;
+      --dark-purple: #e8dfff;
+      --accent-yellow: #ffc97d;
+      --input-bg: #3d2e52;
+      --input-border: #5a4a6e;
+    }
+
+    /* ESTILOS BASE */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Quicksand', sans-serif;
+      background-color: var(--bg-color);
+      color: var(--text-color);
+      line-height: 1.6;
+      min-height: 100vh;
+      overflow-x: hidden;
+      padding: 2rem 1rem;
+      transition: background-color 0.3s ease, color 0.3s ease;
+    }
+
+    /* ESTILOS DO TOGGLE */
+    .theme-toggle-wrapper {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      z-index: 1000;
+    }
+
+    .theme-toggle {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.5rem 1rem;
+      background: var(--card-bg);
+      border-radius: 999px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+      border: none;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .theme-toggle:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    }
+
+    .toggle-switch {
+      position: relative;
+      display: inline-block;
+      width: 50px;
+      height: 24px;
+    }
+
+    .toggle-switch input {
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+
+    .toggle-slider {
+      position: absolute;
+      cursor: pointer;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: var(--purple);
+      transition: .4s;
+      border-radius: 24px;
+    }
+
+    .toggle-slider:before {
+      position: absolute;
+      content: "";
+      height: 16px;
+      width: 16px;
+      left: 4px;
+      bottom: 4px;
+      background-color: white;
+      transition: .4s;
+      border-radius: 50%;
+    }
+
+    input:checked + .toggle-slider {
+      background-color: var(--dark-purple);
+    }
+
+    input:checked + .toggle-slider:before {
+      transform: translateX(26px);
+    }
+
+    .toggle-icon {
+      font-size: 1.2rem;
+      transition: transform 0.3s ease;
+    }
+
+    .theme-toggle:hover .toggle-icon {
+      transform: scale(1.1);
+    }
+
+    /* SEU CSS EXISTENTE (mantive o essencial) */
+    .sparkle {
+      position: fixed;
+      font-size: 2rem;
+      opacity: 0.3;
+      pointer-events: none;
+      z-index: 1;
+    }
+
+    .sparkle-1 { top: 10%; left: 5%; animation: float 3s ease-in-out infinite; }
+    .sparkle-2 { top: 20%; right: 8%; animation: float 4s ease-in-out infinite 1s; }
+    .sparkle-3 { bottom: 15%; left: 10%; animation: float 3.5s ease-in-out infinite 0.5s; }
+    .sparkle-4 { bottom: 25%; right: 5%; animation: float 4.5s ease-in-out infinite 1.5s; }
+
+    @keyframes float {
+      0%, 100% { transform: translateY(0px); }
+      50% { transform: translateY(-20px); }
+    }
+
+    .container {
+      max-width: 800px;
+      margin: 0 auto;
+      position: relative;
+      z-index: 2;
+    }
+
+    header {
+      text-align: center;
+      margin-bottom: 2rem;
+    }
+
+    header h1 {
+      font-size: clamp(2rem, 5vw, 3rem);
+      font-weight: 700;
+      color: var(--dark-purple);
+      margin-bottom: 0.5rem;
+    }
+
+    .subtitle {
+      font-size: 1.1rem;
+      color: var(--text-color);
+      opacity: 0.8;
+    }
+
+    .search-section {
+      background: var(--card-bg);
+      padding: 1.5rem;
+      border-radius: 16px;
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+      margin-bottom: 1.5rem;
+    }
+
+    .search-box {
+      display: flex;
+      gap: 1rem;
+      margin-bottom: 1rem;
+    }
+
+    #city-input {
+      flex: 1;
+      padding: 0.85rem 1.25rem;
+      border: 2px solid var(--input-border);
+      border-radius: 12px;
+      font-family: 'Quicksand', sans-serif;
+      font-size: 1rem;
+      background: var(--input-bg);
+      color: var(--text-color);
+      transition: all 0.3s ease;
+    }
+
+    #city-input:focus {
+      outline: none;
+      border-color: var(--purple);
+      box-shadow: 0 0 0 3px rgba(184, 164, 212, 0.1);
+    }
+
+    .btn-search, .btn-location {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.85rem 1.5rem;
+      border-radius: 12px;
+      font-family: 'Quicksand', sans-serif;
+      font-weight: 600;
+      font-size: 1rem;
+      border: none;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .btn-search {
+      background-color: var(--purple);
+      color: white;
+    }
+
+    .btn-search:hover {
+      background-color: #a590c4;
+      transform: translateY(-2px);
+    }
+
+    .btn-location {
+      background-color: var(--card-bg);
+      color: var(--dark-purple);
+      border: 2px solid var(--purple);
+      width: 100%;
+      justify-content: center;
+    }
+
+    .btn-location:hover {
+      background-color: var(--purple);
+      color: white;
+      transform: translateY(-2px);
+    }
+
+    .welcome-state, .current-weather, .forecast-section {
+      background: var(--card-bg);
+      padding: 2rem;
+      border-radius: 16px;
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+      margin-bottom: 1.5rem;
+      text-align: center;
+    }
+
+    .hidden {
+      display: none !important;
+    }
+
+    footer {
+      text-align: center;
+      margin-top: 2rem;
+      color: var(--text-color);
+      opacity: 0.7;
+    }
+
+    .install-fixed {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      background: var(--accent-yellow);
+      color: var(--dark-purple);
+      border: none;
+      padding: 0.75rem 1.5rem;
+      border-radius: 25px;
+      font-family: 'Quicksand', sans-serif;
+      font-weight: 600;
+      cursor: pointer;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+      z-index: 1000;
+    }
+  </style>
 </head>
 <body>
+  <!-- BOTÃO TOGGLE -->
+  <div class="theme-toggle-wrapper">
+    <button class="theme-toggle" aria-label="Toggle theme">
+      <span class="toggle-icon">☀️</span>
+      <label class="toggle-switch">
+        <input type="checkbox" id="universal-theme-toggle">
+        <span class="toggle-slider"></span>
+      </label>
+      <span class="toggle-icon">🌙</span>
+    </button>
+  </div>
+
   <!-- Floating decorations -->
   <div class="sparkle sparkle-1">✨</div>
   <div class="sparkle sparkle-2">💜</div>
@@ -156,12 +445,35 @@
     <p>Made with 💜 and lots of sparkles ✨</p>
   </footer>
   
-<!-- Botão para instalar o app -->
-<button id="install-btn" class="install-fixed">✨ Instalar App ✨</button>
+  <!-- Botão para instalar o app -->
+  <button id="install-btn" class="install-fixed">✨ Instalar App ✨</button>
 
+  <!-- JAVASCRIPT DO TOGGLE -->
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      const toggle = document.getElementById('universal-theme-toggle');
+      const prefersDark = window.matchMedia('(prefers-color-scheme: dark)');
+      const savedTheme = localStorage.getItem('universalTheme');
+      
+      // Set initial theme
+      if (savedTheme === 'dark' || (!savedTheme && prefersDark.matches)) {
+        document.documentElement.setAttribute('data-theme', 'dark');
+        toggle.checked = true;
+      }
 
-  <script src="script.js"></script>
-  
+      // Toggle theme on change
+      toggle.addEventListener('change', function() {
+        if (this.checked) {
+          document.documentElement.setAttribute('data-theme', 'dark');
+          localStorage.setItem('universalTheme', 'dark');
+        } else {
+          document.documentElement.removeAttribute('data-theme');
+          localStorage.setItem('universalTheme', 'light');
+        }
+      });
+    });
+  </script>
+
   <!-- PWA Service Worker Registration -->
   <script>
     if ('serviceWorker' in navigator) {
