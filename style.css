@@ -664,3 +664,89 @@ footer {
     font-size: 2rem;
   }
 }
+/* TOGGLE STYLES */
+.theme-toggle-wrapper {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  z-index: 1000;
+}
+
+.theme-toggle {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1rem;
+  background: var(--card-bg, white);
+  border-radius: 999px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  border: none;
+  cursor: pointer;
+}
+
+.toggle-switch {
+  position: relative;
+  display: inline-block;
+  width: 50px;
+  height: 24px;
+}
+
+.toggle-switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.toggle-slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #b8a4d4;
+  transition: .4s;
+  border-radius: 24px;
+}
+
+.toggle-slider:before {
+  position: absolute;
+  content: "";
+  height: 16px;
+  width: 16px;
+  left: 4px;
+  bottom: 4px;
+  background-color: white;
+  transition: .4s;
+  border-radius: 50%;
+}
+
+input:checked + .toggle-slider {
+  background-color: #3d2e52;
+}
+
+input:checked + .toggle-slider:before {
+  transform: translateX(26px);
+}
+
+.toggle-icon {
+  font-size: 1.2rem;
+}
+
+/* VARIÁVEIS PARA O TEMA */
+:root {
+  --card-bg: #ffffff;
+}
+
+[data-theme="dark"] {
+  --bg-color: #2a1b3d;
+  --text-color: #f5f3f0;
+  --card-bg: #3d2e52;
+}
+
+/* SE PRECISAR, ADICIONE ISSO TAMBÉM: */
+body {
+  background-color: var(--bg-color, #f5f3f0);
+  color: var(--text-color, #2d2838);
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
