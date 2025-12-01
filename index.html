@@ -190,3 +190,26 @@
   </script>
 </body>
 </html>
+<script>
+// TOGGLE SIMPLES - coloca isso ANTES do </body>
+document.addEventListener('DOMContentLoaded', function() {
+  const toggle = document.getElementById('universal-theme-toggle');
+  if (!toggle) return;
+  
+  const savedTheme = localStorage.getItem('universalTheme');
+  if (savedTheme === 'dark') {
+    document.documentElement.setAttribute('data-theme', 'dark');
+    toggle.checked = true;
+  }
+
+  toggle.addEventListener('change', function() {
+    if (this.checked) {
+      document.documentElement.setAttribute('data-theme', 'dark');
+      localStorage.setItem('universalTheme', 'dark');
+    } else {
+      document.documentElement.removeAttribute('data-theme');
+      localStorage.setItem('universalTheme', 'light');
+    }
+  });
+});
+</script>
