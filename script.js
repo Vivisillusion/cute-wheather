@@ -1,3 +1,4 @@
+
 // CUTE WEATHER APP - JAVASCRIPT
 // API Configuration
 const API_KEY = '7fa58de710f0a10cc4662052b5389365';
@@ -365,27 +366,3 @@ console.log('🔍 Debug PWA:');
 console.log('- Service Worker suportado:', 'serviceWorker' in navigator);
 console.log('- HTTPS:', window.location.protocol === 'https:');
 console.log('- Standalone mode:', window.matchMedia('(display-mode: standalone)').matches);
-// TOGGLE FUNCIONAL - adiciona no final do script.js
-document.addEventListener('DOMContentLoaded', function() {
-  const toggle = document.getElementById('universal-theme-toggle');
-  
-  // Carrega tema salvo
-  const savedTheme = localStorage.getItem('universalTheme');
-  if (savedTheme === 'dark') {
-    document.documentElement.setAttribute('data-theme', 'dark');
-    if (toggle) toggle.checked = true;
-  }
-  
-  // Alterna tema
-  if (toggle) {
-    toggle.addEventListener('change', function() {
-      if (this.checked) {
-        document.documentElement.setAttribute('data-theme', 'dark');
-        localStorage.setItem('universalTheme', 'dark');
-      } else {
-        document.documentElement.removeAttribute('data-theme');
-        localStorage.setItem('universalTheme', 'light');
-      }
-    });
-  }
-});
